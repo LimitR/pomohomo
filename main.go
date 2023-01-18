@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"pomidoro/utils"
+	"strings"
 	"time"
 
 	"github.com/faiface/beep/mp3"
@@ -72,6 +73,7 @@ func main() {
 		go func() {
 			ch <- 0
 		}()
+		win.ShowAll()
 	})
 
 	pause.Connect("button-press-event", func() {
@@ -82,6 +84,7 @@ func main() {
 		go func() {
 			ch <- 1
 		}()
+		win.ShowAll()
 	})
 
 	reset.Connect("button-press-event", func() {
@@ -91,21 +94,24 @@ func main() {
 		go func() {
 			ch <- 2
 		}()
-		times.Show()
+		win.ShowAll()
 	})
 
 	inp.Connect("activate", func() {
 		s, _ := inp.GetText()
-		l, _ := gtk.LabelNew(s)
-		ch, _ := gtk.CheckButtonNew()
-		ch.Connect("clicked", func() {
-			l.SetNoShowAll(true)
-			win.ShowAll()
-		})
-		box, _ := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
-		box.Add(ch)
-		box.Add(l)
-		tasks.Add(box)
+		inp.DeleteText(0, len(s))
+		if len(strings.ReplaceAll(s, " ", "")) != 0 {
+			l, _ := gtk.LabelNew(s)
+			ch, _ := gtk.CheckButtonNew()
+			ch.Connect("clicked", func() {
+				l.SetNoShowAll(true)
+				win.ShowAll()
+			})
+			box, _ := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
+			box.Add(ch)
+			box.Add(l)
+			tasks.Add(box)
+		}
 		win.ShowAll()
 	})
 
