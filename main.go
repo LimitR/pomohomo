@@ -99,15 +99,27 @@ func main() {
 
 	inp.Connect("activate", func() {
 		s, _ := inp.GetText()
+		flag := true
 		inp.DeleteText(0, len(s))
 		if len(strings.ReplaceAll(s, " ", "")) != 0 {
 			l, _ := gtk.LabelNew(s)
 			ch, _ := gtk.CheckButtonNew()
-			ch.Connect("clicked", func() {
-				l.SetNoShowAll(true)
-				win.ShowAll()
+			ch.Connect("toggled", func() {
+				if flag {
+					t, _ := l.GetText()
+					l.SetMarkup("<s>" + t + "</s>")
+					win.ShowAll()
+					flag = false
+				} else {
+					t, _ := l.GetText()
+					l.SetText(t)
+					win.ShowAll()
+					flag = true
+				}
 			})
+
 			box, _ := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
+			l.SetMarginStart(10)
 			box.Add(ch)
 			box.Add(l)
 			tasks.Add(box)
