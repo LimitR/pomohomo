@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"pomidoro/utils"
+	"strconv"
 	"strings"
 	"time"
 
@@ -119,9 +120,35 @@ func main() {
 			})
 
 			box, _ := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 0)
+			box.SetSpacing(10)
 			l.SetMarginStart(10)
+			boxByn, _ := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 3)
+			pomoCount, _ := gtk.LabelNew("0")
+			pomoCount.SetMarginStart(10)
+			btnPlus, _ := gtk.ButtonNewWithLabel("+")
+			btnMinus, _ := gtk.ButtonNewWithLabel("-")
+			btnPlus.Connect("clicked", func() {
+				pomoCountIntS, _ := pomoCount.GetText()
+				pomoCountInt, _ := strconv.Atoi(pomoCountIntS)
+				pomoCount.SetText(strconv.Itoa(pomoCountInt + 1))
+				pomoCount.Show()
+			})
+
+			btnMinus.Connect("clicked", func() {
+				pomoCountIntS, _ := pomoCount.GetText()
+				pomoCountInt, _ := strconv.Atoi(pomoCountIntS)
+				if pomoCountInt-1 >= 0 {
+					pomoCount.SetText(strconv.Itoa(pomoCountInt - 1))
+					pomoCount.Show()
+				}
+			})
+			boxByn.Add(pomoCount)
+			boxByn.Add(btnPlus)
+			boxByn.Add(btnMinus)
+
 			box.Add(ch)
 			box.Add(l)
+			box.Add(boxByn)
 			tasks.Add(box)
 		}
 		win.ShowAll()
